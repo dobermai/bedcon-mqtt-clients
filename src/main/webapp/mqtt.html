@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>MQTT Over Websockets</title>
+    <script type="text/javascript" src="mqttws31.js"></script>
+    <script>
+        var client = new Messaging.Client("localhost", 8000, "websocket_client");
+
+        client.onMessageArrived = function (message) {
+            //Do something with the push message you received
+            document.getElementById("messages").innerHTML += '<span>Topic: ' + message.destinationName + '  | ' + message.payloadString + '</span><br/>'
+        };
+
+        var options = {
+            timeout: 3,
+            //Gets Called if the connection has sucessfully been established
+            onSuccess: function () {
+                client.subscribe('#', {qos: 2});
+                alert('Subscribed');
+            },
+            //Gets Called if the connection could not be established
+            onFailure: function (message) {
+                alert("Connection failed: " + message.errorMessage);
+            }
+        };
+
+        client.connect(options);
+
+    </script>
+</head>
+<body>
+
+<div id="messages"></div>
+
+</body>
+</html>
